@@ -1,0 +1,5 @@
+package com.rideshare.rideservice.exception;
+
+public class GlobalExceptionHandler {
+
+}

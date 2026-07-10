@@ -1,0 +1,20 @@
+package com.rideshare.locationservice.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.rideshare.locationservice.service.LocationService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@Slf4j
+@RequiredArgsConstructor
+@RequestMapping("/app/v1/locations")
+
+public class LocationController {
+	
+	private final LocationService locserv;
+
+}
