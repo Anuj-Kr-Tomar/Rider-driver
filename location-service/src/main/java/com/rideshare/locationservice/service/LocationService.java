@@ -58,27 +58,36 @@ public class LocationService {
         log.info("Finding drivers near lat: {} long: {} withing {}Km",
                 latitude, longitude, radiusInKm);
 
+
+        // Creating the search area
         Circle searchArea = new Circle(
-                new Point(longitude, latitude),
-                new Distance(radiusInKm, Metrics.KILOMETERS)
+                new Point(longitude, latitude), // creating center point
+                new Distance(radiusInKm, Metrics.KILOMETERS) // radius = 5 unit kms
         );
 
+    
+        // Spring wraps all the objects around Georesults object Georesults has res1, res2, res3, each contains drivers locations
+        //
         GeoResults<RedisGeoCommands.GeoLocation<String>> results =
-                redisTemplate.opsForGeo().radius(
-                        DRIVERS_GEO_KEY,
-                        searchArea,
-                        RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
-                                .includeCoordinates()
-                                .includeDistance()
+                redisTemplate.opsForGeo().radius(  // similar to GEOSEARCH
+                        DRIVERS_GEO_KEY, // means search inside drivers:locations (driver1, driver2 ...)
+                        searchArea, // within circle
+                        RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs() // Think of them as saying Redis,while searching,also do these things.
+                                .includeCoordinates() // without this redis return on driver 101, but with it return driver101, lat, long
+                                .includeDistance() //  without this redis return on driver 101, but with it return driver101, 2.1km
                                 .sortAscending()
                                 .limit(10)
                 );
+
+        //Redis returns its own internal objects.
+        //Your REST API should not expose Redis classes directly.
+         //Instead you create your own DTO.
 
         List<NearByDriverResponse> nearbyDrivers = new ArrayList<>();
 
         if(results != null){
             results.getContent().forEach(result -> {
-                RedisGeoCommands.GeoLocation<String> location = result.getContent();
+                RedisGeoCommands.GeoLocation<String> location = result.getContent(); // u get driver id , location inside reusult
                 nearbyDrivers.add(new NearByDriverResponse(
                         location.getName(),
                         location.getPoint().getY(),
