@@ -1,5 +1,0 @@
-package com.rideshare.rideservice.event;
-
-public class RideMatchedEvent {
-
-}

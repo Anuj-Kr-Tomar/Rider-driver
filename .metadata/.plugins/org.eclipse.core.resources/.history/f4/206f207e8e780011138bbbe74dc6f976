@@ -1,5 +1,0 @@
-package com.rideshare.rideservice.model;
-
-public enum RideStatus {
-
-}
